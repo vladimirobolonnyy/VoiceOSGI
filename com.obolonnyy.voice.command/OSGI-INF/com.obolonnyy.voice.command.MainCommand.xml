@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="com.obolonnyy.voice.command.MainCommand">
+   <property name="osgi.command.scope" type="String" value="fipro"/>
+   <property name="osgi.command.function" type="String">invert
+main
+test
+   </property>
+   <service>
+      <provide interface="com.obolonnyy.voice.command.MainCommand"/>
+   </service>
+   <reference bind="bindStringInverter" cardinality="1..1" interface="com.obolonnyy.voice.StringInverter" name="StringInverter" policy="static" unbind="unbindStringInverter"/>
+   <implementation class="com.obolonnyy.voice.command.MainCommand"/>
+</scr:component>
