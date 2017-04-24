@@ -36,7 +36,16 @@ public class RecordingThread extends Thread {
 
     private File AudioFileStream;
 
-    public RecordingThread() {
+    private ArrayList<String> messages = new ArrayList<String>();
+
+    public ArrayList<String> GetMessages() {
+
+    	return (messages);
+	}
+
+
+
+	public RecordingThread() {
 
         microphone = new MicrophoneAnalyzer(FLACFileWriter.FLAC);
 
@@ -96,7 +105,6 @@ public class RecordingThread extends Thread {
 
         microphone.getAudioFile().delete();
 
-
         return NoiseLevel;
     }
 
@@ -110,12 +118,13 @@ public class RecordingThread extends Thread {
         int curSample = 0;
         if(this.AudioFileStream == null) {
 
-            while (true) {
+        	boolean goThread = true;
+            while (goThread) {
                 microphone.open();
 
 
                 try {
-                    tempAudioFile = new File("DisplayAllReponce.flac");
+                    tempAudioFile = new File("TestRec.flac");
                     microphone.setAudioFile(tempAudioFile);
                     microphone.captureAudioToFile(microphone.getAudioFile());
 
@@ -127,7 +136,7 @@ public class RecordingThread extends Thread {
                     //int magnitude = microphone.getAudioVolume(checkVolumeSampleTime);
                     System.out.println(magnitude);
                     //boolean isSpeaking = (volume > minimumVolumeToStartrecording);
-                    boolean isSpeaking = (magnitude > 100);
+                    boolean isSpeaking = (magnitude > 150);
 
                     if (isSpeaking) {
 
@@ -143,7 +152,7 @@ public class RecordingThread extends Thread {
                             } else {
                                 counter = 0;
                             }
-                            if(counter >= 2) {
+                            if(counter >= 5) {
                                 break;
                             }
                         }
@@ -152,20 +161,34 @@ public class RecordingThread extends Thread {
 
                         DebugLog("Recording Complete!");
                         microphone.close();
-                        Thread.sleep(1000000);
+
                         DebugLog("Recognizing...");
 
                         GoogleResponse response = recognizer.getRecognizedDataForFlac(microphone.getAudioFile(), 1);
                         notifyListeners(response);
 
-                        DebugLog("Looping back");//Restarts loops
+                        System.out.println("My Google response:= ");
+                        System.out.println(response.getResponse());
+                        System.out.println("My Other Possible Responses:= ");
 
+                        messages.add(response.getResponse());
+
+                        for (String s : response.getOtherPossibleResponses()) {
+                        	messages.add(s);
+            				System.out.println("\t" + s);
+            			}
+
+
+            			System.out.println("Sleep for 1 sek");
+            			Thread.sleep(1000);
+                        DebugLog("Looping back");//Restarts loops
+                        goThread = false;
 
                     }
                     microphone.getAudioFile().delete();
 
                     if(magnitude == 0) {
-                        Main.SII.runRecording();
+                        Main.voice.runRecording();
                     }
 
 
@@ -180,11 +203,14 @@ public class RecordingThread extends Thread {
             }
         } else {
 
+        	System.out.println("\n\n\nМы зашли в тот самый бесполезный else\n\n\n");
+        	/*
+
             while (true) {
                 microphone.open();
 
                 try {
-                    tempAudioFile = new File("DisplayAllReponce.flac");
+                    tempAudioFile = new File("TestRecorder2.flac");
                     microphone.setAudioFile(tempAudioFile);
                     microphone.captureAudioFromFileToFile(microphone.getAudioFile(), AudioFileStream);
 
@@ -230,7 +256,7 @@ public class RecordingThread extends Thread {
                 }
             }
 
-        }
+        */}
 
     }
 
