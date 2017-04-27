@@ -3,6 +3,7 @@ package com.obolonnyy.voice.command;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.apache.felix.service.command.CommandProcessor;
@@ -35,19 +36,23 @@ public class MainCommand {
 	    }
 
 
-	    public void main() {
-	    	System.out.println("Main is working");
+	public void main() {
+		System.out.println("Main is working");
 
-	    	ArrayList<String> message = new ArrayList<String>();
-	    	for (int i = 0; i < 3; i++){
-	    		message = voice.runRecording();
+		ArrayList<String> phrases = new ArrayList<>();
+		File audioFile;
 
-		    	System.out.println("List of getting phrases:");
-		    	for (String each: message){
-		    		System.out.println(each);
-		    	}
+		for (int i = 0; i < 1; i++) {
 
-	    	}
+			audioFile = voice.runRecording();
+			phrases = voice.sendRecordToGoogle(audioFile);
 
-	    }
+			for (String phrase : phrases) {
+				System.out.println(phrase);
+			}
+
+			phrases = new ArrayList<>();
+		}
+
+	}
 }

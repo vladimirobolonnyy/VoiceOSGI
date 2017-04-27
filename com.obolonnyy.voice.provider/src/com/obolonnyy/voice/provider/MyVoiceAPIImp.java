@@ -2,6 +2,7 @@ package com.obolonnyy.voice.provider;
 
 import com.obolonnyy.voice.myVoiceAPI;
 import com.obolonnyy.voice.RecordingThread.RecordingThread;
+import com.obolonnyy.voice.RecordingThread.ResponseListener;
 import com.obolonnyy.voice.micro.Microphone;
 import com.obolonnyy.voice.testGoogle.GoogleResponse;
 import com.obolonnyy.voice.testGoogle.Recognizer;
@@ -9,6 +10,7 @@ import com.obolonnyy.voice.testGoogle.Recognizer;
 import javaFlacEncoder.FLACFileWriter;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.osgi.service.component.annotations.Component;
@@ -18,25 +20,11 @@ import org.osgi.service.component.annotations.Component;
 @Component
 public class MyVoiceAPIImp implements myVoiceAPI {
 
-/*    @Override
-    public String invert(String input) {
-        return new StringBuilder(input).reverse().toString();
-    }*/
-
-
-	public String startVoiceSpeech(){
-		runRecording();
-		//String message = sendToGoogle();
-		String message = "startVoiceSpeech()";
-
-
-
-		return (message);
-	}
+	private ArrayList<String> messages = new ArrayList<String>();
 
 
     @Override
-	public ArrayList<String> runRecording() {
+	public File runRecording() {
 			System.out.println("We are in the runRecording method (MyVoiceAPIImp)");
 
 			RecordingThread rec = new RecordingThread();
@@ -44,7 +32,8 @@ public class MyVoiceAPIImp implements myVoiceAPI {
 
 			try {
 				rec.join();
-				return (rec.GetMessages());
+				return (rec.getReturnedAudio());
+
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -52,14 +41,51 @@ public class MyVoiceAPIImp implements myVoiceAPI {
 			return (null);
 	}
 
+    @Override
+	public ArrayList<String> sendRecordToGoogle(File file){
+
+
+    	System.out.println("Recognizing...");
+
+
+    	Microphone mic = new Microphone(FLACFileWriter.FLAC);
+    	Recognizer recognizer = new Recognizer(Recognizer.Languages.RUSSIAN, "AIzaSyDMRFZsdncfP2udmTbozAQ2owJuL5RRm34");
+		int maxNumOfResponses = 3;
+		//file = new File("com.obolonnyy.voice.command/VoiceAudio/TestRec2plus2.flac");
+
+		try {
+			GoogleResponse response = recognizer.getRecognizedDataForFlac(file, maxNumOfResponses ,
+					(int) mic.getAudioFormat().getSampleRate());
+
+			messages.add(response.getResponse());
+	        for (String s : response.getOtherPossibleResponses()) {
+	        	messages.add(s);
+			}
+
+
+	        System.out.println("Looping back");//Restarts loops
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e);
+			e.printStackTrace();
+
+		}
+
+    	return (messages);
+
+    }
+
 
     @Override
 	public void TestGoogle(){
 
+    	System.out.println("Testing Google");
+
 		@SuppressWarnings("resource")
 		Microphone mic = new Microphone(FLACFileWriter.FLAC);
 		File file;
-		file = new File("com.obolonnyy.voice.command/VoiceAudio/TestRec.flac");
+		file = new File("C:/myFolder/eclipse_neon/WorkSpaces/myOSGI_DS_v3/com.obolonnyy.voice.command/VoiceAudio/TestRec2plus2.flac");
 
 
 		Recognizer recognizer = new Recognizer(Recognizer.Languages.RUSSIAN, "AIzaSyDMRFZsdncfP2udmTbozAQ2owJuL5RRm34");
@@ -82,6 +108,8 @@ public class MyVoiceAPIImp implements myVoiceAPI {
 			for (String s : response.getOtherPossibleResponses()) {
 				System.out.println("\t" + s);
 			}
+
+			System.out.println("Google Test successed!");
 		} catch (Exception ex) {
 			// TODO Handle how to respond if Google cannot be contacted
 			System.out.println("ERROR: Google cannot be contacted");
@@ -89,5 +117,6 @@ public class MyVoiceAPIImp implements myVoiceAPI {
 			//ex.printStackTrace();
 		}
 	}
+
 
 }

@@ -2,13 +2,13 @@ package com.obolonnyy.voice.RecordingThread;
 
 
 import com.obolonnyy.voice.micro.MicrophoneAnalyzer;
-import com.obolonnyy.voice.provider.Main;
 import com.darkprograms.speech.recognizer.GoogleResponse;
 import com.darkprograms.speech.recognizer.Recognizer;
 import javaFlacEncoder.FLACFileWriter;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,14 +36,14 @@ public class RecordingThread extends Thread {
 
     private File AudioFileStream;
 
+    private File ReturnedAudio;
+
     private ArrayList<String> messages = new ArrayList<String>();
 
-    public ArrayList<String> GetMessages() {
 
-    	return (messages);
-	}
-
-
+    public File getReturnedAudio(){
+    	return (ReturnedAudio);
+    }
 
 	public RecordingThread() {
 
@@ -160,8 +160,20 @@ public class RecordingThread extends Thread {
 
 
                         DebugLog("Recording Complete!");
-                        microphone.close();
 
+                        String path = microphone.getAudioFile().getAbsolutePath();
+                        String dest = path.substring(0, path.lastIndexOf('.')) + "2" + ".flac";
+
+                        System.out.println("path is: " + path);
+                        System.out.println("dest is: " + dest);
+
+
+                        ReturnedAudio = new File(dest);
+                        Files.copy(microphone.getAudioFile().toPath(), ReturnedAudio.toPath());
+
+
+                        microphone.close();
+                        /*
                         DebugLog("Recognizing...");
 
                         GoogleResponse response = recognizer.getRecognizedDataForFlac(microphone.getAudioFile(), 1);
@@ -182,22 +194,17 @@ public class RecordingThread extends Thread {
             			System.out.println("Sleep for 1 sek");
             			Thread.sleep(1000);
                         DebugLog("Looping back");//Restarts loops
+                        */
                         goThread = false;
 
                     }
                     microphone.getAudioFile().delete();
-
-                    if(magnitude == 0) {
-                        Main.voice.runRecording();
-                    }
-
 
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                     System.out.println("Error Occured");
                 } finally {
-
                     microphone.close();//Makes sure microphone closes on exit.
                 }
             }
