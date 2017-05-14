@@ -2,10 +2,9 @@ package com.obolonnyy.voice.provider;
 
 import com.obolonnyy.voice.myVoiceAPI;
 import com.obolonnyy.voice.RecordingThread.RecordingThread;
-import com.obolonnyy.voice.RecordingThread.ResponseListener;
 import com.obolonnyy.voice.micro.Microphone;
-import com.obolonnyy.voice.testGoogle.GoogleResponse;
-import com.obolonnyy.voice.testGoogle.Recognizer;
+import com.darkprograms.speech.recognizer.GoogleResponse;
+import com.darkprograms.speech.recognizer.Recognizer;
 
 import javaFlacEncoder.FLACFileWriter;
 
@@ -85,8 +84,7 @@ public class MyVoiceAPIImp implements myVoiceAPI {
 		@SuppressWarnings("resource")
 		Microphone mic = new Microphone(FLACFileWriter.FLAC);
 		File file;
-		file = new File("C:/myFolder/eclipse_neon/WorkSpaces/myOSGI_DS_v3/com.obolonnyy.voice.command/VoiceAudio/TestRec2plus2.flac");
-
+		file = new File(new File("").getAbsolutePath() + "/TestRec2.flac");
 
 		Recognizer recognizer = new Recognizer(Recognizer.Languages.RUSSIAN, "AIzaSyDMRFZsdncfP2udmTbozAQ2owJuL5RRm34");
 		// Although auto-detect is available, it is recommended you select your

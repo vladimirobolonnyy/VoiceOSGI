@@ -14,9 +14,9 @@ public class Main {
 
 		ArrayList<String> phrases = new ArrayList<>();
 		File audioFile;
-
+		
+		//audioFile = new File(new File("").getAbsolutePath() + "/TestRec2.flac");
 		audioFile = voice.runRecording();
-		//audioFile = new File("com.obolonnyy.voice.command/VoiceAudio/TestRec2plus2.flac");
 		phrases = voice.sendRecordToGoogle(audioFile);
 
 		for (String phrase: phrases){

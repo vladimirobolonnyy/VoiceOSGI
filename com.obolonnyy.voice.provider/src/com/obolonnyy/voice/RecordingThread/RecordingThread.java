@@ -32,7 +32,6 @@ public class RecordingThread extends Thread {
     private File tempAudioFile;
     private Recognizer recognizer;
 
-    private List<ResponseListener> listeners;
 
     private File AudioFileStream;
 
@@ -50,7 +49,6 @@ public class RecordingThread extends Thread {
         microphone = new MicrophoneAnalyzer(FLACFileWriter.FLAC);
 
         recognizer = new Recognizer(Recognizer.Languages.RUSSIAN, apiKey);
-        listeners = new ArrayList<ResponseListener>();
 
         int TimeInMsToCalculateNoiseLevel = 10;
         System.out.println("Start Calculating Noise Level");
@@ -64,7 +62,6 @@ public class RecordingThread extends Thread {
         microphone = new MicrophoneAnalyzer(FLACFileWriter.FLAC);
 
         recognizer = new Recognizer(Recognizer.Languages.RUSSIAN, apiKey);
-        listeners = new ArrayList<ResponseListener>();
 
         this.AudioFileStream = AudioFile;
 
@@ -108,9 +105,6 @@ public class RecordingThread extends Thread {
         return NoiseLevel;
     }
 
-    public void addResponceListener(ResponseListener listener) {
-        listeners.add(listener);
-    }
 
     @Override
     public void run() {
@@ -163,13 +157,17 @@ public class RecordingThread extends Thread {
 
                         String path = microphone.getAudioFile().getAbsolutePath();
                         String dest = path.substring(0, path.lastIndexOf('.')) + "2" + ".flac";
+                        File destFile = new File (dest);
+                        destFile.delete();
+
 
                         System.out.println("path is: " + path);
                         System.out.println("dest is: " + dest);
 
 
                         ReturnedAudio = new File(dest);
-                        Files.copy(microphone.getAudioFile().toPath(), ReturnedAudio.toPath());
+                        //Files.copy(microphone.getAudioFile().toPath(), ReturnedAudio.toPath());
+                        ReturnedAudio = microphone.getAudioFile();
 
 
                         microphone.close();
@@ -267,13 +265,13 @@ public class RecordingThread extends Thread {
 
     }
 
-    private void notifyListeners (GoogleResponse response) {
+/*    private void notifyListeners (GoogleResponse response) {
         for(ResponseListener listener : listeners) {
             if(listener != null) {
                 listener.onResponce(response);
             }
         }
-    }
+    }*/
 
 
     private void DebugLog(String message) {
