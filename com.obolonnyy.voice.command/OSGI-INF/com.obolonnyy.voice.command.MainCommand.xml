@@ -3,10 +3,11 @@
    <property name="osgi.command.scope" type="String" value="fipro"/>
    <property name="osgi.command.function" type="String">main
 test
+test2
    </property>
    <service>
       <provide interface="com.obolonnyy.voice.command.MainCommand"/>
    </service>
-   <reference bind="bindStringvoice" cardinality="1..1" interface="com.obolonnyy.voice.myVoiceAPI" name="Stringvoice" policy="static" unbind="unbindStringvoice"/>
+   <reference bind="bindStringvoice" cardinality="1..1" interface="com.obolonny.voice.recordingAPI.recordingAPI" name="Stringvoice" policy="static" unbind="unbindStringvoice"/>
    <implementation class="com.obolonnyy.voice.command.MainCommand"/>
 </scr:component>
