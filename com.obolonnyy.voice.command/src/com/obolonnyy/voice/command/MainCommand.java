@@ -2,15 +2,17 @@ package com.obolonnyy.voice.command;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.felix.service.command.CommandProcessor;
 
-import com.obolonny.voice.recordingAPI.RecordingAPI;
+import com.obolonnyy.voice.commandAPI.CommandAPI;
 
-import com.obolonnyy.voice.myVoiceAPI;
 
-@Component(property = {
+@Component(immediate = true,
+			property = {
 		CommandProcessor.COMMAND_SCOPE + ":String=fipro",
 		CommandProcessor.COMMAND_FUNCTION + ":String=main",
 		CommandProcessor.COMMAND_FUNCTION + ":String=test",
@@ -19,66 +21,70 @@ import com.obolonnyy.voice.myVoiceAPI;
 	service = MainCommand.class
 )
 
-public class MainCommand {
+public class MainCommand implements CommandAPI{
 
+	private ConcurrentLinkedQueue<String[]> queue;
 
-	private RecordingAPI voice;
+	@Activate
+    void activate() {
+        System.out.println("Инициализация MainCommand прошла успешно");
 
-	@Reference
-	void bindStringvoice(RecordingAPI voice) {
-		this.voice = voice;
+        queue = new ConcurrentLinkedQueue<String[]>();
+
+        WaitResultThread waitThread = new WaitResultThread(queue);
+        waitThread.start();
+    }
+
+	@Override
+	public void processPhrases(ArrayList<String> message){
+		queue.add((String[])message.toArray());
 	}
 
-	void unbindStringvoice(RecordingAPI voice) {
-		this.voice = null;
+
+/*	private String get() {
+		String[] words = queue.peek();
+		String word = null;
+		if (words != null)
+			word = queue.peek()[0];
+		return word;
 	}
 
-	public void test() {
-		System.out.println("Test is working");
-		voice.startRecording();
+	private String[] gets() {
+		return queue.peek();
 	}
 
+	private String remove() {
+		String[] words = queue.poll();
+		String word = null;
+		if (words != null)
+			word = queue.peek()[0];
+		return word;
+	}
 
-	 //@Reference void bindStringvoice(myVoiceAPI voice) { this.voice = voice; }
-
-	 //void unbindStringvoice(myVoiceAPI voice) { this.voice = null; }
-
-
-
-/*	private ComponentContext context;
-    @Activate
-    void activate(ComponentContext context) {
-        this.context = context;
-        System.out.println("done");
-    }*/
-
-/*	public void test2() {
-		System.out.println("Test2 is working");
-		voice.startRecording();
-	}*/
-
-//	public void test2() {
-//		System.out.println("Test is working");
-//		voice.TestGoogle();
+	private String[] removes() {
+		return queue.poll();
+	}
+*/
+//	@Reference
+//	void bindStringvoice(RecordingAPI voice) {
+//		this.recording = voice;
+//	}
+//
+//	void unbindStringvoice(RecordingAPI voice) {
+//		this.recording = null;
 //	}
 
-//	public void main() {
-//		System.out.println("Main is working");
+//	@Reference
+//	void bindMyRecognizer(RecognizerAPI recognizer) {
+//		this.recognizer = recognizer;
+//	}
 //
-//		ArrayList<String> phrases = new ArrayList<>();
-//		File audioFile;
-//
-//		for (int i = 0; i < 1; i++) {
-//
-//			audioFile = voice.runRecording();
-//			phrases = voice.sendRecordToGoogle(audioFile);
-//
-//			for (String phrase : phrases) {
-//				System.out.println(phrase);
-//			}
-//
-//			phrases = new ArrayList<>();
-//		}
-//
+//	void unbindMyRecognizer(RecognizerAPI recognizer) {
+//		this.recognizer = null;
+//	}
+
+//	public void test() {
+//		System.out.println("Test is working");
+//		recording.startRecording();
 //	}
 }
