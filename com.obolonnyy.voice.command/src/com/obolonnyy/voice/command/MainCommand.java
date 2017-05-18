@@ -1,11 +1,12 @@
 package com.obolonnyy.voice.command;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import org.apache.felix.service.command.CommandProcessor;
 
-import com.obolonny.voice.recordingAPI.recordingAPI;
+import com.obolonny.voice.recordingAPI.RecordingAPI;
 
 import com.obolonnyy.voice.myVoiceAPI;
 
@@ -21,24 +22,22 @@ import com.obolonnyy.voice.myVoiceAPI;
 public class MainCommand {
 
 
-	private recordingAPI voice2;
+	private RecordingAPI voice;
 
 	@Reference
-	void bindStringvoice(recordingAPI voice2) {
-		this.voice2 = voice2;
+	void bindStringvoice(RecordingAPI voice) {
+		this.voice = voice;
 	}
 
-	void unbindStringvoice(recordingAPI voice) {
-		this.voice2 = null;
+	void unbindStringvoice(RecordingAPI voice) {
+		this.voice = null;
 	}
 
 	public void test() {
 		System.out.println("Test is working");
-		voice2.startRecording();
+		voice.startRecording();
 	}
 
-
-	 private myVoiceAPI voice;
 
 	 //@Reference void bindStringvoice(myVoiceAPI voice) { this.voice = voice; }
 
@@ -55,7 +54,7 @@ public class MainCommand {
 
 /*	public void test2() {
 		System.out.println("Test2 is working");
-		voice2.startRecording();
+		voice.startRecording();
 	}*/
 
 //	public void test2() {
