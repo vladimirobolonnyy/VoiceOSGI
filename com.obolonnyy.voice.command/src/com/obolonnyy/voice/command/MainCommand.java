@@ -11,25 +11,18 @@ import org.apache.felix.service.command.CommandProcessor;
 import com.obolonnyy.voice.commandAPI.CommandAPI;
 
 
-@Component(immediate = true,
-			property = {
-		CommandProcessor.COMMAND_SCOPE + ":String=fipro",
-		CommandProcessor.COMMAND_FUNCTION + ":String=main",
-		CommandProcessor.COMMAND_FUNCTION + ":String=test",
-		CommandProcessor.COMMAND_FUNCTION + ":String=test2"
-		},
-	service = MainCommand.class
+@Component(immediate = true
 )
 
 public class MainCommand implements CommandAPI{
 
-	private ConcurrentLinkedQueue<String[]> queue;
+	private ConcurrentLinkedQueue<ArrayList<String>> queue;
 
 	@Activate
     void activate() {
         System.out.println("Инициализация MainCommand прошла успешно");
 
-        queue = new ConcurrentLinkedQueue<String[]>();
+        queue = new ConcurrentLinkedQueue<ArrayList<String>>();
 
         WaitResultThread waitThread = new WaitResultThread(queue);
         waitThread.start();
@@ -37,7 +30,13 @@ public class MainCommand implements CommandAPI{
 
 	@Override
 	public void processPhrases(ArrayList<String> message){
-		queue.add((String[])message.toArray());
+
+		try {
+			queue.add(message);
+		} catch (Exception e) {
+			System.out.println("Ошибка при добавлении в очередь");
+			System.out.println(e);
+		}
 	}
 
 

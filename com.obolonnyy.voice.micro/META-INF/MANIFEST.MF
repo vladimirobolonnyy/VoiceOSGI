@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Micro
+Bundle-SymbolicName: com.obolonnyy.voice.micro
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.obolonnyy.voice.MicroAPI;version="[1.0.0,2.0.0)",
+ org.osgi.service.component.annotations;version="[1.2.0,2.0.0)";resolution:=optional
+Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/com.obolonnyy.voice.micro.MyMicro.xml
+Bundle-ClassPath: lib/JARVIS-API.jar,
+ lib/javaFlacEncoder-0.3.1.jar,
+ lib/jflac-1.3.jar,
+ .

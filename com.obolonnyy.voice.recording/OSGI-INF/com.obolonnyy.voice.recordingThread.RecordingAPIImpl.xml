@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" immediate="true" name="com.obolonnyy.voice.recordingThread.RecordingAPIImpl">
+   <service>
+      <provide interface="com.obolonny.voice.recordingAPI.RecordingAPI"/>
+   </service>
+   <reference bind="bindValidateMicro" cardinality="1..1" interface="com.obolonnyy.voice.MicroAPI.MicroAPI" name="ValidateMicro" policy="static" unbind="unbindValidateMicro"/>
+   <reference bind="bindValidateRecognizer" cardinality="1..1" interface="com.obolonnyy.voice.RecognizerAPI.RecognizerAPI" name="ValidateRecognizer" policy="static" unbind="unbindValidateRecognizer"/>
+   <implementation class="com.obolonnyy.voice.recordingThread.RecordingAPIImpl"/>
+</scr:component>

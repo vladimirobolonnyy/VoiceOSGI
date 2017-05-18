@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Recognizer
+Bundle-SymbolicName: com.obolonnyy.voice.recognizer
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.obolonnyy.voice.RecognizerAPI;version="[1.0.0,2.0.0)",
+ com.obolonnyy.voice.commandAPI;version="[1.0.0,2.0.0)",
+ org.apache.felix.service.command;status=provisional;version="[0.10.0,2.0.0)",
+ org.osgi.service.component.annotations;version="[1.2.0,2.0.0)";resolution:=optional
+Bundle-ClassPath: lib/JARVIS-API.jar,
+ lib/java-json.jar,
+ .
+Service-Component: OSGI-INF/com.obolonnyy.voice.recognizer.MyRecognizer.xml
+Bundle-ActivationPolicy: lazy
